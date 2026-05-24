@@ -1,53 +1,40 @@
 {
-  "name": "Listening Study App",
-  "short_name": "ListenStudy",
-  "description": "Aprenda inglês ouvindo e praticando listening com audio, ditado e flashcards",
+  "name": "Listening Study - Aprenda Inglês",
+  "short_name": "ListenApp",
+  "description": "Aprenda inglês com listening interativo, flashcards e ditado",
   "start_url": "/meu-app-ingles/",
   "scope": "/meu-app-ingles/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "theme_color": "#0D1117",
   "background_color": "#0D1117",
   "orientation": "portrait",
+  "categories": ["education", "productivity"],
+  "lang": "pt-BR",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
+      "src": "https://via.placeholder.com/192x192.png?text=🎧",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://emojicdn.elk.sh/🎧",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "https://emojicdn.elk.sh/🎧",
+      "src": "https://via.placeholder.com/512x512.png?text=🎧",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Iniciar Estudo",
+      "short_name": "Estudar",
+      "description": "Inicia uma sessão de estudo",
+      "url": "/meu-app-ingles/",
+      "icons": [{ "src": "https://via.placeholder.com/96x96.png?text=📚", "sizes": "96x96" }]
     }
   ]
 }
