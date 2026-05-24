@@ -1490,6 +1490,15 @@ updateArchiveMeta();
 buildLessons();
 updateWordsMeta();
 setTimeout(()=>{updateGoalDisplay();checkNotifications();setInterval(checkNotifications,60000);},1000);
+
 </script>
+  <script>
+  // Registrar Service Worker para PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/meu-app-ingles/sw.js')
+      .then(reg => console.log('✅ SW registrado:', reg))
+      .catch(err => console.log('❌ SW erro:', err));
+  }
+  </script>
 </body>
 </html>
