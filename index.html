@@ -1495,7 +1495,7 @@ setTimeout(()=>{updateGoalDisplay();checkNotifications();setInterval(checkNotifi
   <script>
   // Registrar Service Worker para PWA
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/meu-app-ingles/sw.js')
+    navigator.serviceWorker.register('./sw.js')
       .then(reg => console.log('✅ SW registrado:', reg))
       .catch(err => console.log('❌ SW erro:', err));
   }
