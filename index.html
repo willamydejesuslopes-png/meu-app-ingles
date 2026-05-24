@@ -322,6 +322,8 @@ h1 .hl{color:var(--gold);font-style:italic;}
 .notification-badge{position:absolute;top:-8px;right:-8px;background:var(--c);color:white;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;}
 .export-errors-area{max-width:700px;margin:1rem auto;background:rgba(247,129,102,0.05);border:1px dashed var(--c);border-radius:0.7rem;padding:1rem;display:none;}
 .export-errors-area textarea{width:100%;background:rgba(255,255,255,0.03);border:2px solid var(--border);border-radius:0.5rem;padding:0.5rem;font-family:monospace;font-size:var(--fs-sm);color:var(--text);}
+.audio-warning{background:rgba(227,179,65,0.15);border:2px solid var(--gold);border-radius:0.8rem;padding:0.8rem 1rem;margin-bottom:1rem;text-align:center;animation:fadeUp 0.3s ease;}
+.audio-warning button{background:var(--gold);border:none;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:700;margin-top:0.5rem;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -350,6 +352,12 @@ h1 .hl{color:var(--gold);font-style:italic;}
       </div>
     </div>
   </header>
+
+  <!-- AVISO PARA ÁUDIOS LOCAIS -->
+  <div id="audioWarning" class="audio-warning">
+    🔊 Para funcionar no APK, baixe os arquivos de áudio! 
+    <button onclick="downloadAudioGuide()">📥 Ver como baixar</button>
+  </div>
 
   <!-- METAS DIÁRIAS -->
   <div class="meta-goal">
@@ -657,6 +665,99 @@ let selectedIndices=new Set();
 let currentManageTab='active';
 function isWord(en){return en.trim().split(/\s+/).length===1;}
 
+// ══ NOVA FUNÇÃO DE ÁUDIO USANDO ARQUIVOS LOCAIS (OPÇÃO 1) ══
+// Esta é a correção principal!
+function speak(idx) {
+  // Para no áudio anterior se existir
+  if(window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio.currentTime = 0;
+  }
+  
+  const phrase = phrases[idx].en;
+  // Cria nome do arquivo: remove pontuação, espaços viram _, minúsculas
+  const fileName = phrase.toLowerCase()
+    .replace(/[?.!]/g, '')
+    .replace(/\s+/g, '_') + '.mp3';
+  
+  const audioPath = `audio/${fileName}`;
+  const audio = new Audio(audioPath);
+  window.currentAudio = audio;
+  
+  const btn = document.getElementById('pbtn' + idx);
+  const pause = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`;
+  const play = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
+  
+  // Karaoke visual
+  const kwEls = document.querySelectorAll(`#krow${idx} .kw`);
+  kwEls.forEach(el => el.classList.remove('active', 'done'));
+  
+  audio.onplay = () => {
+    if(btn) btn.innerHTML = pause;
+    // Calcula timing para karaoke baseado na duração
+    const words = phrase.split(' ');
+    const duration = audio.duration;
+    const step = (duration / words.length) * 1000;
+    words.forEach((_, i) => {
+      setTimeout(() => {
+        kwEls.forEach((el, j) => {
+          if(j < i) el.classList.add('done');
+          el.classList.toggle('active', j === i);
+        });
+      }, i * step);
+    });
+  };
+  
+  audio.onended = () => {
+    if(btn) btn.innerHTML = play;
+    kwEls.forEach(el => el.classList.remove('active'));
+  };
+  
+  audio.onerror = () => {
+    if(btn) btn.innerHTML = play;
+    console.warn(`Áudio não encontrado: ${audioPath}`);
+    // Fallback: tenta usar TTS se o arquivo não existe
+    if(window.speechSynthesis) {
+      const utter = new SpeechSynthesisUtterance(phrase);
+      utter.lang = 'en-US';
+      utter.rate = speed;
+      utter.onstart = () => { if(btn) btn.innerHTML = pause; };
+      utter.onend = () => { if(btn) btn.innerHTML = play; };
+      speechSynthesis.speak(utter);
+    }
+  };
+  
+  audio.play().catch(e => console.warn('Erro ao reproduzir:', e));
+}
+
+// Função para gerar guia de download de áudios
+function downloadAudioGuide() {
+  const phrases = getActivePhrases();
+  let html = '🎵 Para baixar os áudios:\n\n';
+  html += '1. Acesse: https://text-to-mp3.com/ ou use Google Tradutor\n';
+  html += '2. Digite a frase em inglês\n';
+  html += '3. Baixe o MP3\n';
+  html += '4. Coloque na pasta "audio" do seu projeto\n\n';
+  html += '📁 Nomes dos arquivos (DEVEM SER EXATAMENTE ESTES):\n\n';
+  
+  phrases.forEach(p => {
+    const fileName = p.en.toLowerCase().replace(/[?.!]/g, '').replace(/\s+/g, '_') + '.mp3';
+    html += `• ${fileName}\n  Frase: "${p.en}"\n\n`;
+  });
+  
+  // Criar modal com instruções
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:20px;padding:20px;max-width:500px;max-height:80vh;overflow-y:auto;">
+      <h3 style="color:var(--gold);margin-bottom:15px;">📥 Como baixar os áudios</h3>
+      <pre style="white-space:pre-wrap;font-size:12px;background:rgba(0,0,0,0.3);padding:15px;border-radius:10px;font-family:monospace;">${html}</pre>
+      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:15px;padding:10px;background:var(--a);border:none;border-radius:8px;cursor:pointer;font-weight:700;">Fechar</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 // ══ FUNÇÕES PRINCIPAIS ══
 function buildTypeFilter(){
   const active=getActivePhrases();
@@ -711,21 +812,6 @@ function startTimer(idx,limit){
   timerIntervals[idx]=setInterval(()=>{elapsed++;const left=limit-elapsed;if(disp){disp.textContent=left>0?left+'s':'⏰';if(left<=5)disp.classList.add('warning');}if(elapsed>=limit)clearInterval(timerIntervals[idx]);},1000);
 }
 function stopTimer(idx){clearInterval(timerIntervals[idx]);}
-function speak(idx){
-  if(!window.speechSynthesis)return;
-  speechSynthesis.cancel();
-  const kwEls=document.querySelectorAll(`#krow${idx} .kw`);
-  kwEls.forEach(el=>el.classList.remove('active','done'));
-  const u=new SpeechSynthesisUtterance(phrases[idx].en);
-  u.lang='en-US';u.rate=speed;
-  const btn=document.getElementById('pbtn'+idx);
-  if(!btn)return;
-  const pause=`<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`;
-  const play=`<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
-  u.onstart=()=>{btn.innerHTML=pause;const words=phrases[idx].en.split(' ');const dur=(words.length/speed)*0.55*1000;const step=dur/words.length;words.forEach((_,i)=>setTimeout(()=>{kwEls.forEach((el,j)=>{if(j<i)el.classList.add('done');el.classList.toggle('active',j===i);});},i*step));};
-  u.onend=u.onerror=()=>{btn.innerHTML=play;kwEls.forEach(el=>el.classList.remove('active'));};
-  speechSynthesis.speak(u);
-}
 function goNext(n){
   if(n<phrases.length){
     toggleLesson(n);
@@ -865,6 +951,10 @@ function buildLessons(){
   const metaCount=document.getElementById('metaCount');
   if(metaCount) metaCount.textContent=`🎧 ${phrases.length} item${phrases.length!==1?'s':''}`;
   updateWordsMeta();updateProgress();buildTopicFilter();buildTypeFilter();updateArchiveMeta();
+  
+  // Verificar áudios disponíveis
+  checkAvailableAudios();
+  
   if(!phrases.length){
     if(container) container.innerHTML='<div class="empty-msg">Nenhum item para estudar. Adicione frases ou remova itens do arquivo!</div>';
     return;
@@ -888,14 +978,14 @@ function buildLessons(){
           <button class="play-btn" style="background:${colors[i%3]}" onclick="speak(${i})" id="pbtn${i}">
             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </button>
-          <div class="play-info"><strong>Ouça ${isW?'a palavra':'a frase'}</strong>Pode repetir quantas vezes quiser</div>
+          <div class="play-info"><strong>Ouça ${isW?'a palavra':'a frase'}</strong><br>Pode repetir quantas vezes quiser</div>
         </div>
         <div class="hint-section">
           <div class="hint-label"><span>💡 Dica</span><button class="hint-btn" onclick="revealNextHint(${i})">+1 palavra</button></div>
           <div class="hint-words">${hintWords}</div>
         </div>
         <div class="attempts-row" id="att${i}">Tentativas: <span>0</span></div>
-        <div class="input-area"><textarea id="inp${i}" rows="2" placeholder="Type what you heard..."></textarea></div>
+        <div class="input-area"><textarea id="inp${i}" rows="2" placeholder="Digite o que você ouviu..."></textarea></div>
         <div class="btn-row">
           <button class="btn btn-check" onclick="check(${i})">✓ Verificar</button>
           <button class="btn btn-clear" onclick="clearEx(${i})">Limpar</button>
@@ -917,7 +1007,7 @@ function buildLessons(){
           <div class="hint-words">${hintWords}</div>
         </div>
         <div class="attempts-row" id="att${i}">Tentativas: <span>0</span></div>
-        <div class="input-area"><textarea id="inp${i}" rows="2" placeholder="Write in English..."></textarea></div>
+        <div class="input-area"><textarea id="inp${i}" rows="2" placeholder="Escreva em inglês..."></textarea></div>
         <div class="btn-row">
           <button class="btn btn-check" onclick="checkReverse(${i})">✓ Verificar</button>
           <button class="btn btn-clear" onclick="clearEx(${i})">Limpar</button>
@@ -953,6 +1043,31 @@ function buildLessons(){
     }
   });
 }
+
+// Função para verificar áudios disponíveis
+function checkAvailableAudios() {
+  const audioWarning = document.getElementById('audioWarning');
+  if(!audioWarning) return;
+  
+  // Testa se há pelo menos um áudio disponível
+  const testPhrase = phrases[0];
+  if(testPhrase) {
+    const fileName = testPhrase.en.toLowerCase().replace(/[?.!]/g, '').replace(/\s+/g, '_') + '.mp3';
+    const audio = new Audio(`audio/${fileName}`);
+    audio.onerror = () => {
+      audioWarning.style.display = 'block';
+    };
+    audio.oncanplaythrough = () => {
+      audioWarning.style.display = 'none';
+    };
+    setTimeout(() => {
+      if(audioWarning.style.display !== 'none') {
+        audioWarning.style.display = 'block';
+      }
+    }, 500);
+  }
+}
+
 const exampleTemplates=[
   (w)=>({en:`I think that is very ${w}.`,pt:`Eu acho que isso é muito ${w}.`}),
   (w)=>({en:`She looks ${w} today.`,pt:`Ela parece ${w} hoje.`}),
@@ -1420,20 +1535,35 @@ function nextDictationPhrase(){
 }
 function startDictation(){
   if(!currentDictationPhrase) return;
-  speechSynthesis.cancel();
+  // Usar arquivo de áudio local para ditado também
+  const fileName = currentDictationPhrase.en.toLowerCase().replace(/[?.!]/g, '').replace(/\s+/g, '_') + '.mp3';
+  const audioPath = `audio/${fileName}`;
+  const audio = new Audio(audioPath);
   const btn = document.getElementById('dictationPlayBtn');
   const pause = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`;
   const play = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
-  let speeds = [0.7, 0.6, 0.5];
-  let currentSpeedIndex = dictationAttempt;
-  if(currentSpeedIndex >= speeds.length) currentSpeedIndex = speeds.length - 1;
-  const utter = new SpeechSynthesisUtterance(currentDictationPhrase.en);
-  utter.lang = 'en-US';
-  utter.rate = speeds[currentSpeedIndex];
-  utter.onstart = () => { btn.innerHTML = pause; };
-  utter.onend = () => { btn.innerHTML = play; dictationAttempt++; if(dictationAttempt < 3) { setTimeout(() => startDictation(), 1000); } else { document.getElementById('dictationPrompt').innerHTML = "✅ Áudio completo! Agora escreva o que ouviu."; } };
-  utter.onerror = () => { btn.innerHTML = play; };
-  speechSynthesis.speak(utter);
+  
+  audio.onplay = () => { btn.innerHTML = pause; };
+  audio.onended = () => { 
+    btn.innerHTML = play; 
+    dictationAttempt++;
+    if(dictationAttempt < 3) { 
+      setTimeout(() => startDictation(), 1000); 
+    } else { 
+      document.getElementById('dictationPrompt').innerHTML = "✅ Áudio completo! Agora escreva o que ouviu."; 
+    }
+  };
+  audio.onerror = () => {
+    btn.innerHTML = play;
+    // Fallback para TTS
+    const utter = new SpeechSynthesisUtterance(currentDictationPhrase.en);
+    utter.lang = 'en-US';
+    utter.rate = 0.6;
+    utter.onstart = () => { btn.innerHTML = pause; };
+    utter.onend = () => { btn.innerHTML = play; dictationAttempt++; };
+    speechSynthesis.speak(utter);
+  };
+  audio.play();
 }
 function checkDictation(){
   const userInput = document.getElementById('dictationInput').value.trim();
@@ -1598,4 +1728,4 @@ updateWordsMeta();
 setTimeout(()=>{updateGoalDisplay();checkNotifications();setInterval(checkNotifications,60000);},1000);
 </script>
 </body>
-</html>
+  </html>
