@@ -1,7 +1,7 @@
 {
   "name": "Listening Study App",
   "short_name": "ListenStudy",
-  "description": "Aprenda inglês ouvindo e praticando listening com áudio, ditado e flashcards",
+  "description": "Aprenda inglês ouvindo e praticando listening com audio, ditado e flashcards",
   "start_url": "/meu-app-ingles/",
   "scope": "/meu-app-ingles/",
   "display": "standalone",
