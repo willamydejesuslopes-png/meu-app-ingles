@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0D1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Listening Study App</title>
+<title>Listening Study App - Completo</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -141,6 +141,14 @@ h1 .hl{color:var(--gold);font-style:italic;}
 .score-msg{font-size:var(--fs-sm);color:var(--muted);text-align:right;line-height:1.6;font-weight:600;}
 .practice-btn{display:none;width:100%;margin-bottom:0.6rem;padding:0.85rem;background:rgba(247,129,102,0.12);border:2px solid var(--c);color:var(--c);border-radius:0.6rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:all 0.15s;}
 .practice-btn:hover{background:rgba(247,129,102,0.22);}
+.example-btn{width:100%;margin-bottom:0.6rem;padding:0.75rem;background:rgba(210,168,255,0.1);border:2px solid var(--purple);color:var(--purple);border-radius:0.6rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:all 0.15s;}
+.example-btn:hover{background:rgba(210,168,255,0.2);}
+.example-box{display:none;margin-bottom:0.8rem;padding:1rem 1.1rem;background:rgba(210,168,255,0.07);border:1px solid rgba(210,168,255,0.25);border-radius:0.7rem;animation:fadeUp 0.25s ease;}
+.example-box.visible{display:block;}
+.example-en{font-size:var(--fs-base);color:var(--text);font-weight:600;margin-bottom:0.3rem;line-height:1.5;}
+.example-en .highlight{color:var(--purple);text-decoration:underline;font-weight:700;}
+.example-pt{font-size:var(--fs-sm);color:var(--muted);font-style:italic;font-weight:500;}
+.example-loading{font-size:var(--fs-sm);color:var(--muted);text-align:center;padding:0.5rem;}
 .next-btn{display:none;width:100%;padding:0.85rem;background:transparent;border:2px dashed var(--b);color:var(--b);border-radius:0.6rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:all 0.15s;}
 .next-btn:hover{background:rgba(63,185,80,0.1);}
 #completion{display:none;max-width:700px;margin:1.5rem auto 0;background:var(--card);border:2px solid var(--gold);border-radius:1.2rem;padding:2.2rem;text-align:center;animation:fadeUp 0.4s ease;}
@@ -279,9 +287,23 @@ h1 .hl{color:var(--gold);font-style:italic;}
 .modal-box{background:var(--card);border:2px solid var(--border);border-radius:1.2rem;padding:1.8rem;max-width:520px;width:100%;animation:fadeUp 0.2s ease;max-height:90vh;overflow-y:auto;}
 .modal-box h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem;}
 .modal-close{float:right;background:transparent;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;}
+.ai-tabs{display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.ai-tab{flex:1;padding:0.55rem;border-radius:0.5rem;border:2px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:var(--fs-sm);cursor:pointer;font-weight:700;transition:all 0.15s;min-width:80px;}
+.ai-tab.active{background:var(--a);border-color:var(--a);color:#fff;}
+.ai-panel{display:none;}.ai-panel.active{display:block;}
+.ai-input{width:100%;background:rgba(255,255,255,0.04);border:2px solid var(--border);border-radius:0.6rem;padding:0.8rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);color:var(--text);outline:none;resize:vertical;min-height:60px;font-weight:500;transition:border-color 0.15s;}
+.ai-input:focus{border-color:var(--a);}
+.ai-run-btn{width:100%;margin-top:0.7rem;padding:0.8rem;background:var(--a);border:none;color:var(--bg);border-radius:0.6rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;}
+.ai-run-btn:disabled{opacity:0.4;cursor:default;}
+.ai-result-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:0.6rem;padding:0.8rem 1rem;margin-top:0.6rem;font-size:var(--fs-base);}
+.ai-result-en{color:var(--text);font-weight:600;}
+.ai-result-pt{color:var(--muted);font-size:var(--fs-sm);margin-top:0.2rem;font-weight:500;}
+.ai-add-btn{font-size:var(--fs-sm);float:right;background:var(--b);border:none;color:var(--bg);padding:0.25em 0.75em;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;}
+.ai-loader{text-align:center;padding:1.2rem;color:var(--muted);font-size:var(--fs-base);}
 .share-area{width:100%;background:rgba(255,255,255,0.03);border:2px solid var(--border);border-radius:0.6rem;padding:0.8rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-sm);color:var(--muted);resize:none;min-height:100px;outline:none;line-height:1.8;}
 .copy-btn{width:100%;margin-top:0.7rem;padding:0.8rem;background:var(--purple);border:none;color:var(--bg);border-radius:0.6rem;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:700;cursor:pointer;}
 
+/* NOVOS ESTILOS */
 .meta-goal{background:var(--card);border:2px solid var(--gold);border-radius:0.9rem;padding:0.6rem 1rem;margin-bottom:1rem;max-width:700px;margin-left:auto;margin-right:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;}
 .meta-goal-text{font-size:var(--fs-sm);color:var(--muted);}
 .meta-goal-text strong{color:var(--gold);font-size:var(--fs-lg);}
@@ -329,6 +351,7 @@ h1 .hl{color:var(--gold);font-style:italic;}
     </div>
   </header>
 
+  <!-- METAS DIÁRIAS -->
   <div class="meta-goal">
     <div class="meta-goal-text">🎯 <strong id="goalStatus">Defina sua meta diária</strong></div>
     <div>
@@ -351,6 +374,7 @@ h1 .hl{color:var(--gold);font-style:italic;}
     <button class="tool-btn purple" onclick="showFlashcardMode()">🃏 Flashcards</button>
     <button class="tool-btn purple" onclick="showDictationMode()">📝 Ditado</button>
     <button class="tool-btn gold" onclick="showView('viewManage')">📁 Gerenciar</button>
+    <button class="tool-btn" style="border-color:var(--purple);color:var(--purple);" onclick="openAI()">🤖 IA</button>
   </div>
 
   <div class="mode-group">
@@ -388,8 +412,8 @@ h1 .hl{color:var(--gold);font-style:italic;}
       <div class="flashcard-hint">👆 Clique no card para virar | 👈👉 Use setas</div>
     </div>
     <div style="display:flex;gap:1rem;margin-top:1rem;">
-      <button class="copy-btn" onclick="prevFlashcard()" style="flex:1;">◀ Anterior</button>
-      <button class="copy-btn" onclick="nextFlashcard()" style="flex:1;">Próximo ▶</button>
+      <button class="ai-run-btn" onclick="prevFlashcard()" style="flex:1;">◀ Anterior</button>
+      <button class="ai-run-btn" onclick="nextFlashcard()" style="flex:1;">Próximo ▶</button>
     </div>
     <button class="copy-btn" onclick="closeFlashcard()" style="margin-top:1rem;">Fechar</button>
   </div>
@@ -574,19 +598,44 @@ h1 .hl{color:var(--gold);font-style:italic;}
   </div>
 </div>
 
+<!-- ══ AI MODAL ══ -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAI()">✕</button>
+    <h3>🤖 Inteligência</h3>
+    <div class="ai-tabs">
+      <button class="ai-tab active" onclick="switchAITab('tabSuggest',this)">💡 Sugerir</button>
+      <button class="ai-tab" onclick="switchAITab('tabTranslate',this)">🌐 Traduzir</button>
+      <button class="ai-tab" onclick="switchAITab('tabShare',this)">🔗 Compartilhar</button>
+    </div>
+    <div class="ai-panel active" id="tabSuggest">
+      <input class="ai-input" id="suggestInput" placeholder="Ex: frases de restaurante nível básico" style="min-height:unset;resize:none;">
+      <button class="ai-run-btn" id="suggestBtn" onclick="runSuggest()">Gerar com IA</button>
+      <div id="suggestResult"></div>
+    </div>
+    <div class="ai-panel" id="tabTranslate">
+      <textarea class="ai-input" id="translateInput" placeholder="Can you help me?&#10;Where is the hospital?"></textarea>
+      <button class="ai-run-btn" id="translateBtn" onclick="runTranslate()">Traduzir com IA</button>
+      <div id="translateResult"></div>
+    </div>
+    <div class="ai-panel" id="tabShare">
+      <textarea class="share-area" id="shareArea" readonly></textarea>
+      <button class="copy-btn" onclick="copyShare()">📋 Copiar lista</button>
+      <div id="shareFeedback" style="font-size:var(--fs-sm);font-weight:700;color:var(--b);margin-top:0.5rem;text-align:center;"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══ STORAGE ══
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 function load(k,def){try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):def;}catch{return def;}}
 
-// ══ ARQUIVO INICIAL ══
+// ══ ARQUIVO ══
 let allPhrases=load('ls_phrases',[
   {en:"Where is the boarding gate",pt:"Onde fica o portão de embarque?",tag:"✈️ Aeroporto",archived:false},
   {en:"Can we schedule a meeting",pt:"Podemos agendar uma reunião?",tag:"💼 Trabalho",archived:false},
-  {en:"I have a reservation for tonight",pt:"Tenho uma reserva para esta noite.",tag:"🏨 Hotel",archived:false},
-  {en:"Delicious",pt:"Delicioso",tag:"🔤 Palavra",archived:false},
-  {en:"What time does the flight depart",pt:"Que horas o voo sai?",tag:"✈️ Aeroporto",archived:false},
-  {en:"I need to charge my phone",pt:"Preciso carregar meu telefone",tag:"📱 Geral",archived:false}
+  {en:"I have a reservation for tonight",pt:"Tenho uma reserva para esta noite.",tag:"🏨 Hotel",archived:false}
 ]);
 
 function savePhrases(){save('ls_phrases',allPhrases);}
@@ -653,7 +702,7 @@ function showView(id){
   if(id==='viewStudy') buildLessons();
 }
 function setMode(btn){currentMode=btn.dataset.mode;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');buildLessons();}
-function loadStreak(){const d=load('ls_streak',{});const t=new Date().toDateString();if(d.lastDate===t)return d.count||0;if(d.lastDate===new Date(Date.now()-86400000).toDateString())return (d.count||0)+1;return 1;}
+function loadStreak(){const d=load('ls_streak',{});const t=new Date().toDateString();if(d.lastDate===t)return d.count||0;if(d.lastDate===new Date(Date.now()-86400000).toDateString())return d.count||0;return 0;}
 function saveStreak(){const t=new Date().toDateString();const d=load('ls_streak',{});const c=d.lastDate===t?d.count:(d.lastDate===new Date(Date.now()-86400000).toDateString()?(d.count||0)+1:1);save('ls_streak',{lastDate:t,count:c});document.getElementById('streakNum').textContent=c;}
 document.getElementById('streakNum').textContent=loadStreak();
 function setSpeed(btn){document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');speed=parseFloat(btn.dataset.rate);}
@@ -772,6 +821,7 @@ function finishLesson(idx,pct){
     document.getElementById('next'+idx).style.display='block';
     updateProgress();saveStreak();
     if(pct===100)launchConfetti();
+    // Contabilizar para meta diária
     const today = new Date().toDateString();
     let todayProgress = load('ls_today_progress', 0);
     let lastGoalDate = load('ls_goal_date', '');
@@ -891,6 +941,7 @@ function buildLessons(){
         ${modeContent}
         <div class="phrase-box" id="ans${i}" onclick="revealAnswer(${i})">👆 Clique para revelar</div>
         <div class="result" id="res${i}"></div>
+        ${isW?`<button class="example-btn" id="ex${i}" onclick="showExample(${i})">💡 Ver exemplo com esta palavra</button><div class="example-box" id="exbox${i}"></div>`:''}
         <button class="practice-btn" id="prac${i}" onclick="openPractice(${i})">🔁 Errei! Praticar 5x</button>
         <button class="next-btn" id="next${i}" onclick="${isLast?'showCompletion()':'goNext('+(i+1)+')'}">${isLast?'Ver resultado final 🎉':'Próxima lição →'}</button>
       </div>`;
@@ -902,7 +953,47 @@ function buildLessons(){
     }
   });
 }
-
+const exampleTemplates=[
+  (w)=>({en:`I think that is very ${w}.`,pt:`Eu acho que isso é muito ${w}.`}),
+  (w)=>({en:`She looks ${w} today.`,pt:`Ela parece ${w} hoje.`}),
+  (w)=>({en:`This is a ${w} place to visit.`,pt:`Este é um lugar ${w} para visitar.`}),
+];
+async function showExample(idx){
+  const word=phrases[idx].en.toLowerCase();
+  const btn=document.getElementById('ex'+idx);
+  const box=document.getElementById('exbox'+idx);
+  if(box.classList.contains('visible')){
+    box.classList.remove('visible');
+    btn.textContent='💡 Ver exemplo com esta palavra';
+    return;
+  }
+  btn.disabled=true;
+  btn.textContent='⏳ Gerando...';
+  box.classList.add('visible');
+  box.innerHTML='<div class="example-loading">⏳ Buscando exemplo...</div>';
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,messages:[{role:'user',content:`Create 1 short simple English sentence using the word "${word}". Reply ONLY with JSON, no markdown:\n{"en":"sentence here","pt":"tradução em português"}`}]})
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'';
+    const item=JSON.parse(text.replace(/```json|```/g,'').trim());
+    const regex=new RegExp(`\\b(${word}s?|${word}ed|${word}ing|${word})\\b`,'gi');
+    const highlighted=item.en.replace(regex,m=>`<span class="highlight">${m}</span>`);
+    box.innerHTML=`<div class="example-en">📝 ${highlighted}</div><div class="example-pt">🇧🇷 ${item.pt}</div>`;
+    btn.textContent='✕ Fechar exemplo';
+  } catch {
+    const tmpl=exampleTemplates[Math.floor(Math.random()*exampleTemplates.length)];
+    const {en:sentence, pt:translation}=tmpl(word);
+    const regex=new RegExp(`\\b${word}\\b`,'gi');
+    const highlighted=sentence.replace(regex,m=>`<span class="highlight">${m}</span>`);
+    box.innerHTML=`<div class="example-en">📝 ${highlighted}</div><div class="example-pt">🇧🇷 ${translation}</div>`;
+    btn.textContent='✕ Fechar exemplo';
+  }
+  btn.disabled=false;
+}
 let practiceState={phrase:null,step:0,total:5};
 function openPractice(idx){
   practiceState={phrase:phrases[idx],step:0,total:5};
@@ -1288,6 +1379,152 @@ function buildReports(history){
   if(errDiv) errDiv.innerHTML=err.length?err.map(([w,s])=>`<div class="report-row"><span>${w}</span><span class="report-err">❌ ${s.wrong}x errada</span></div>`).join(''):'<div class="empty-msg">Nenhum erro ainda.</div>';
 }
 function switchReport(id,btn){document.querySelectorAll('.report-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.report-tab').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');}
+function openAI(){document.getElementById('aiModal').classList.add('open');buildShareText();}
+function closeAI(){document.getElementById('aiModal').classList.remove('open');}
+function switchAITab(id,btn){document.querySelectorAll('.ai-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.ai-tab').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='tabShare')buildShareText();}
+async function callClaude(prompt){const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});const data=await res.json();return data.content?.[0]?.text||'';}
+async function runSuggest(){const topic=document.getElementById('suggestInput').value.trim();if(!topic)return;const btn=document.getElementById('suggestBtn'),res=document.getElementById('suggestResult');btn.disabled=true;res.innerHTML='<div class="ai-loader">⏳ Gerando...</div>';try{const text=await callClaude(`Gere 5 frases em inglês sobre: "${topic}". APENAS JSON sem markdown:\n[{"en":"frase","pt":"tradução"}]`);const items=JSON.parse(text.replace(/```json|```/g,'').trim());res.innerHTML=items.map(it=>`<div class="ai-result-item"><button class="ai-add-btn" onclick="addAIPhrase('${it.en.replace(/'/g,"\\'")}','${it.pt.replace(/'/g,"\\'")}')">+ Add</button><div class="ai-result-en">${it.en}</div><div class="ai-result-pt">🇧🇷 ${it.pt}</div></div>`).join('');}catch{res.innerHTML='<div style="color:var(--c)">Erro. Tente novamente.</div>';}btn.disabled=false;}
+async function runTranslate(){const raw=document.getElementById('translateInput').value.trim();if(!raw)return;const btn=document.getElementById('translateBtn'),res=document.getElementById('translateResult');btn.disabled=true;res.innerHTML='<div class="ai-loader">⏳ Traduzindo...</div>';try{const lines=raw.split('\n').filter(l=>l.trim());const text=await callClaude(`Traduza para português do Brasil. APENAS JSON sem markdown:\n[{"en":"original","pt":"tradução"}]\n\n${lines.join('\n')}`);const items=JSON.parse(text.replace(/```json|```/g,'').trim());res.innerHTML=items.map(it=>`<div class="ai-result-item"><button class="ai-add-btn" onclick="addAIPhrase('${it.en.replace(/'/g,"\\'")}','${it.pt.replace(/'/g,"\\'")}')">+ Add</button><div class="ai-result-en">${it.en}</div><div class="ai-result-pt">🇧🇷 ${it.pt}</div></div>`).join('');}catch{res.innerHTML='<div style="color:var(--c)">Erro. Tente novamente.</div>';}btn.disabled=false;}
+function addAIPhrase(en,pt){
+  allPhrases.push({en:en.replace(/[.?!]$/,''),pt,tag:isWord(en)?'🔤 Palavra':'🤖 IA',archived:false});
+  ensurePhraseDate(en);
+  savePhrases();
+  event.target.textContent='✅';
+  event.target.disabled=true;
+  buildManageLists();
+  buildLessons();
+}
+function buildShareText(){const area=document.getElementById('shareArea');if(area) area.value=allPhrases.map(p=>`${p.en}.\n${p.pt} ${p.archived?'[ARQUIVADO]':''}`).join('\n\n');}
+function copyShare(){navigator.clipboard.writeText(document.getElementById('shareArea').value).then(()=>{const fb=document.getElementById('shareFeedback');if(fb){fb.textContent='✅ Copiado!';setTimeout(()=>fb.textContent='',2000);}}).catch(()=>{});}
+
+// ══ NOVAS FUNCIONALIDADES ══
+let dictationInterval = null;
+let dictationAttempt = 0;
+let currentDictationPhrase = null;
+let dictationPhrases = [];
+function showDictationMode(){
+  dictationPhrases = getActivePhrases();
+  if(dictationPhrases.length === 0){alert("Nenhuma frase disponível para ditado!");return;}
+  dictationAttempt = 0;
+  nextDictationPhrase();
+  document.getElementById('dictationModal').classList.add('open');
+}
+function nextDictationPhrase(){
+  if(dictationPhrases.length === 0) return;
+  const randomIndex = Math.floor(Math.random() * dictationPhrases.length);
+  currentDictationPhrase = dictationPhrases[randomIndex];
+  document.getElementById('dictationPrompt').innerHTML = `📝 ${currentDictationPhrase.en.split(' ').length} palavras | Clique em ouvir`;
+  document.getElementById('dictationInput').value = '';
+  document.getElementById('dictationResult').style.display = 'none';
+  dictationAttempt = 0;
+}
+function startDictation(){
+  if(!currentDictationPhrase) return;
+  speechSynthesis.cancel();
+  const btn = document.getElementById('dictationPlayBtn');
+  const pause = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`;
+  const play = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
+  let speeds = [0.7, 0.6, 0.5];
+  let currentSpeedIndex = dictationAttempt;
+  if(currentSpeedIndex >= speeds.length) currentSpeedIndex = speeds.length - 1;
+  const utter = new SpeechSynthesisUtterance(currentDictationPhrase.en);
+  utter.lang = 'en-US';
+  utter.rate = speeds[currentSpeedIndex];
+  utter.onstart = () => { btn.innerHTML = pause; };
+  utter.onend = () => { btn.innerHTML = play; dictationAttempt++; if(dictationAttempt < 3) { setTimeout(() => startDictation(), 1000); } else { document.getElementById('dictationPrompt').innerHTML = "✅ Áudio completo! Agora escreva o que ouviu."; } };
+  utter.onerror = () => { btn.innerHTML = play; };
+  speechSynthesis.speak(utter);
+}
+function checkDictation(){
+  const userInput = document.getElementById('dictationInput').value.trim();
+  if(!userInput){alert("Digite o que você ouviu!");return;}
+  const userW = norm(userInput).split(/\s+/);
+  const ansW = norm(currentDictationPhrase.en).split(/\s+/);
+  let correct = 0, html = '';
+  const max = Math.max(userW.length, ansW.length);
+  for(let i = 0; i < max; i++){
+    const u = userW[i] || '';
+    const a = ansW[i] || '';
+    if(!a) html += `<span class="ww">${u}</span> `;
+    else if(!u) html += `<span class="wm">[${a}]</span> `;
+    else if(u === a){correct++; html += `<span class="wc">${u}</span> `;}
+    else if(isFuzzy(u, a)){correct += 0.5; html += `<span class="wfuzzy">${u}~</span> `;}
+    else html += `<span class="ww">${u}</span> `;
+  }
+  const pct = Math.round((correct / ansW.length) * 100);
+  const resultDiv = document.getElementById('dictationResult');
+  resultDiv.style.display = 'block';
+  const color = pct === 100 ? 'var(--b)' : pct >= 70 ? 'var(--a)' : 'var(--c)';
+  const msg = pct === 100 ? '🎉 Perfeito!' : pct >= 70 ? '👏 Muito bom!' : '🎧 Tente novamente!';
+  resultDiv.innerHTML = `<div class="result-words">${html}</div><div class="score-bar"><div class="score-pct" style="color:${color}">${pct}%</div><div class="score-msg">${msg}</div></div>`;
+  if(pct >= 80){playSound('correct');setTimeout(()=>nextDictationPhrase(),2000);}
+  else playSound('wrong');
+}
+function clearDictation(){document.getElementById('dictationInput').value='';document.getElementById('dictationResult').style.display='none';}
+function closeDictation(){speechSynthesis.cancel();if(dictationInterval)clearInterval(dictationInterval);document.getElementById('dictationModal').classList.remove('open');}
+let flashcardList = [];
+let currentFlashcardIndex = 0;
+let flashcardFlipped = false;
+function showFlashcardMode(){
+  flashcardList = getActivePhrases();
+  if(flashcardList.length === 0){alert("Nenhum item para estudar!");return;}
+  currentFlashcardIndex = 0;
+  flashcardFlipped = false;
+  updateFlashcard();
+  document.getElementById('flashcardModal').classList.add('open');
+}
+function updateFlashcard(){const phrase=flashcardList[currentFlashcardIndex];document.getElementById('flashcardQuestion').textContent=`🇧🇷 ${phrase.pt}`;document.getElementById('flashcardAnswer').textContent=`🇬🇧 ${phrase.en}`;document.getElementById('flashcardAnswer').classList.remove('show');flashcardFlipped=false;}
+function flipFlashcard(){const answerDiv=document.getElementById('flashcardAnswer');if(flashcardFlipped){answerDiv.classList.remove('show');flashcardFlipped=false;}else{answerDiv.classList.add('show');flashcardFlipped=true;}}
+function nextFlashcard(){if(currentFlashcardIndex<flashcardList.length-1){currentFlashcardIndex++;updateFlashcard();}else{alert("Você completou todos os cards! 🎉");closeFlashcard();}}
+function prevFlashcard(){if(currentFlashcardIndex>0){currentFlashcardIndex--;updateFlashcard();}}
+function closeFlashcard(){document.getElementById('flashcardModal').classList.remove('open');}
+function surpriseMode(){
+  const active=getActivePhrases();
+  if(active.length===0){alert("Nenhum item disponível!");return;}
+  const shuffled=[...active];
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+  const surpriseItems=shuffled.slice(0,Math.min(5,shuffled.length));
+  phrases=surpriseItems;
+  buildLessons();
+  const container=document.getElementById('lessonsContainer');
+  const surpriseMsg=document.createElement('div');
+  surpriseMsg.className='chip';
+  surpriseMsg.style.cssText='background:var(--gold);color:var(--bg);margin-bottom:1rem;text-align:center;animation:fadeUp 0.3s ease;';
+  surpriseMsg.innerHTML=`🎲 MODO SURPRESA! ${surpriseItems.length} itens aleatórios selecionados!`;
+  container.prepend(surpriseMsg);
+  setTimeout(()=>surpriseMsg.remove(),3000);
+}
+function autoReviewMode(){
+  const reviewItems=allPhrases.filter(p=>!p.archived && getSR(p.en)==='review');
+  if(reviewItems.length===0){alert("Nenhum item precisa de revisão no momento!");return;}
+  phrases=reviewItems;
+  buildLessons();
+  const container=document.getElementById('lessonsContainer');
+  const reviewMsg=document.createElement('div');
+  reviewMsg.className='chip';
+  reviewMsg.style.cssText='background:var(--c);color:white;margin-bottom:1rem;text-align:center;';
+  reviewMsg.innerHTML=`🔄 REVISÃO AUTOMÁTICA: ${reviewItems.length} itens para revisar!`;
+  container.prepend(reviewMsg);
+  setTimeout(()=>reviewMsg.remove(),3000);
+}
+let dailyGoal = load('ls_daily_goal', 10);
+let todayProgress = load('ls_today_progress', 0);
+let lastGoalDate = load('ls_goal_date', '');
+function updateGoalDisplay(){
+  const today = new Date().toDateString();
+  if(lastGoalDate !== today){todayProgress=0;save('ls_today_progress',0);save('ls_goal_date',today);}
+  const goalStatusEl=document.getElementById('goalStatus');
+  if(goalStatusEl) goalStatusEl.textContent=`${todayProgress}/${dailyGoal} concluídos hoje`;
+  const metaGoalDisplay=document.getElementById('metaGoalDisplay');
+  if(metaGoalDisplay) metaGoalDisplay.textContent=`🎯 Meta: ${todayProgress}/${dailyGoal}`;
+  if(todayProgress>=dailyGoal && lastGoalDate===today){if(goalStatusEl) goalStatusEl.innerHTML=`🎉 META BATIDA! Parabéns! 🎉`;launchConfetti();}
+}
+function setDailyGoal(){
+  const input=document.getElementById('goalInput');
+  const newGoal=parseInt(input.value);
+  if(newGoal>0 && newGoal<=100){dailyGoal=newGoal;save('ls_daily_goal',dailyGoal);updateGoalDisplay();alert(`Meta diária definida para ${dailyGoal} itens!`);}
+  else alert("Digite um número entre 1 e 100");
+}
 function buildWordErrorChart(){
   const errors=Object.entries(wordStats).filter(([,s])=>s.wrong>0).sort((a,b)=>b[1].wrong-a[1].wrong).slice(0,10);
   const container=document.getElementById('wordErrorChart');
@@ -1354,151 +1591,11 @@ function stopRecording(){
 }
 function playPracticeRecording(){if(recordedAudio){const audio=new Audio(recordedAudio);audio.play();}}
 
-// ══ DITADO ══
-let dictationInterval = null;
-let dictationAttempt = 0;
-let currentDictationPhrase = null;
-let dictationPhrases = [];
-function showDictationMode(){
-  dictationPhrases = getActivePhrases();
-  if(dictationPhrases.length === 0){alert("Nenhuma frase disponível para ditado!");return;}
-  dictationAttempt = 0;
-  nextDictationPhrase();
-  document.getElementById('dictationModal').classList.add('open');
-}
-function nextDictationPhrase(){
-  if(dictationPhrases.length === 0) return;
-  const randomIndex = Math.floor(Math.random() * dictationPhrases.length);
-  currentDictationPhrase = dictationPhrases[randomIndex];
-  document.getElementById('dictationPrompt').innerHTML = `📝 ${currentDictationPhrase.en.split(' ').length} palavras | Clique em ouvir`;
-  document.getElementById('dictationInput').value = '';
-  document.getElementById('dictationResult').style.display = 'none';
-  dictationAttempt = 0;
-}
-function startDictation(){
-  if(!currentDictationPhrase) return;
-  speechSynthesis.cancel();
-  const btn = document.getElementById('dictationPlayBtn');
-  const pause = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`;
-  const play = `<svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
-  let speeds = [0.7, 0.6, 0.5];
-  let currentSpeedIndex = dictationAttempt;
-  if(currentSpeedIndex >= speeds.length) currentSpeedIndex = speeds.length - 1;
-  const utter = new SpeechSynthesisUtterance(currentDictationPhrase.en);
-  utter.lang = 'en-US';
-  utter.rate = speeds[currentSpeedIndex];
-  utter.onstart = () => { btn.innerHTML = pause; };
-  utter.onend = () => { btn.innerHTML = play; dictationAttempt++; if(dictationAttempt < 3) { setTimeout(() => startDictation(), 1000); } else { document.getElementById('dictationPrompt').innerHTML = "✅ Áudio completo! Agora escreva o que ouviu."; } };
-  utter.onerror = () => { btn.innerHTML = play; };
-  speechSynthesis.speak(utter);
-}
-function checkDictation(){
-  const userInput = document.getElementById('dictationInput').value.trim();
-  if(!userInput){alert("Digite o que você ouviu!");return;}
-  const userW = norm(userInput).split(/\s+/);
-  const ansW = norm(currentDictationPhrase.en).split(/\s+/);
-  let correct = 0, html = '';
-  const max = Math.max(userW.length, ansW.length);
-  for(let i = 0; i < max; i++){
-    const u = userW[i] || '';
-    const a = ansW[i] || '';
-    if(!a) html += `<span class="ww">${u}</span> `;
-    else if(!u) html += `<span class="wm">[${a}]</span> `;
-    else if(u === a){correct++; html += `<span class="wc">${u}</span> `;}
-    else if(isFuzzy(u, a)){correct += 0.5; html += `<span class="wfuzzy">${u}~</span> `;}
-    else html += `<span class="ww">${u}</span> `;
-  }
-  const pct = Math.round((correct / ansW.length) * 100);
-  const resultDiv = document.getElementById('dictationResult');
-  resultDiv.style.display = 'block';
-  const color = pct === 100 ? 'var(--b)' : pct >= 70 ? 'var(--a)' : 'var(--c)';
-  const msg = pct === 100 ? '🎉 Perfeito!' : pct >= 70 ? '👏 Muito bom!' : '🎧 Tente novamente!';
-  resultDiv.innerHTML = `<div class="result-words">${html}</div><div class="score-bar"><div class="score-pct" style="color:${color}">${pct}%</div><div class="score-msg">${msg}</div></div>`;
-  if(pct >= 80){playSound('correct');setTimeout(()=>nextDictationPhrase(),2000);}
-  else playSound('wrong');
-}
-function clearDictation(){document.getElementById('dictationInput').value='';document.getElementById('dictationResult').style.display='none';}
-function closeDictation(){speechSynthesis.cancel();if(dictationInterval)clearInterval(dictationInterval);document.getElementById('dictationModal').classList.remove('open');}
-
-// ══ FLASHCARDS ══
-let flashcardList = [];
-let currentFlashcardIndex = 0;
-let flashcardFlipped = false;
-function showFlashcardMode(){
-  flashcardList = getActivePhrases();
-  if(flashcardList.length === 0){alert("Nenhum item para estudar!");return;}
-  currentFlashcardIndex = 0;
-  flashcardFlipped = false;
-  updateFlashcard();
-  document.getElementById('flashcardModal').classList.add('open');
-}
-function updateFlashcard(){const phrase=flashcardList[currentFlashcardIndex];document.getElementById('flashcardQuestion').textContent=`🇧🇷 ${phrase.pt}`;document.getElementById('flashcardAnswer').textContent=`🇬🇧 ${phrase.en}`;document.getElementById('flashcardAnswer').classList.remove('show');flashcardFlipped=false;}
-function flipFlashcard(){const answerDiv=document.getElementById('flashcardAnswer');if(flashcardFlipped){answerDiv.classList.remove('show');flashcardFlipped=false;}else{answerDiv.classList.add('show');flashcardFlipped=true;}}
-function nextFlashcard(){if(currentFlashcardIndex<flashcardList.length-1){currentFlashcardIndex++;updateFlashcard();}else{alert("Você completou todos os cards! 🎉");closeFlashcard();}}
-function prevFlashcard(){if(currentFlashcardIndex>0){currentFlashcardIndex--;updateFlashcard();}}
-function closeFlashcard(){document.getElementById('flashcardModal').classList.remove('open');}
-function surpriseMode(){
-  const active=getActivePhrases();
-  if(active.length===0){alert("Nenhum item disponível!");return;}
-  const shuffled=[...active];
-  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
-  const surpriseItems=shuffled.slice(0,Math.min(5,shuffled.length));
-  phrases=surpriseItems;
-  buildLessons();
-  const container=document.getElementById('lessonsContainer');
-  const surpriseMsg=document.createElement('div');
-  surpriseMsg.className='chip';
-  surpriseMsg.style.cssText='background:var(--gold);color:var(--bg);margin-bottom:1rem;text-align:center;animation:fadeUp 0.3s ease;';
-  surpriseMsg.innerHTML=`🎲 MODO SURPRESA! ${surpriseItems.length} itens aleatórios selecionados!`;
-  container.prepend(surpriseMsg);
-  setTimeout(()=>surpriseMsg.remove(),3000);
-}
-function autoReviewMode(){
-  const reviewItems=allPhrases.filter(p=>!p.archived && getSR(p.en)==='review');
-  if(reviewItems.length===0){alert("Nenhum item precisa de revisão no momento!");return;}
-  phrases=reviewItems;
-  buildLessons();
-  const container=document.getElementById('lessonsContainer');
-  const reviewMsg=document.createElement('div');
-  reviewMsg.className='chip';
-  reviewMsg.style.cssText='background:var(--c);color:white;margin-bottom:1rem;text-align:center;';
-  reviewMsg.innerHTML=`🔄 REVISÃO AUTOMÁTICA: ${reviewItems.length} itens para revisar!`;
-  container.prepend(reviewMsg);
-  setTimeout(()=>reviewMsg.remove(),3000);
-}
-let dailyGoal = load('ls_daily_goal', 10);
-let todayProgress = load('ls_today_progress', 0);
-let lastGoalDate = load('ls_goal_date', '');
-function updateGoalDisplay(){
-  const today = new Date().toDateString();
-  if(lastGoalDate !== today){todayProgress=0;save('ls_today_progress',0);save('ls_goal_date',today);}
-  const goalStatusEl=document.getElementById('goalStatus');
-  if(goalStatusEl) goalStatusEl.textContent=`${todayProgress}/${dailyGoal} concluídos hoje`;
-  const metaGoalDisplay=document.getElementById('metaGoalDisplay');
-  if(metaGoalDisplay) metaGoalDisplay.textContent=`🎯 Meta: ${todayProgress}/${dailyGoal}`;
-  if(todayProgress>=dailyGoal && lastGoalDate===today){if(goalStatusEl) goalStatusEl.innerHTML=`🎉 META BATIDA! Parabéns! 🎉`;launchConfetti();}
-}
-function setDailyGoal(){
-  const input=document.getElementById('goalInput');
-  const newGoal=parseInt(input.value);
-  if(newGoal>0 && newGoal<=100){dailyGoal=newGoal;save('ls_daily_goal',dailyGoal);updateGoalDisplay();alert(`Meta diária definida para ${dailyGoal} itens!`);}
-  else alert("Digite um número entre 1 e 100");
-}
-
 // ══ INIT ══
 updateArchiveMeta();
 buildLessons();
 updateWordsMeta();
 setTimeout(()=>{updateGoalDisplay();checkNotifications();setInterval(checkNotifications,60000);},1000);
-
 </script>
-  <script>
-  // Registrar Service Worker para PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('✅ SW registrado:', reg))
-      .catch(err => console.log('❌ SW erro:', err));
-  }
-  </script>
 </body>
 </html>
